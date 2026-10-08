@@ -1,1 +1,1 @@
-"""Módulo de MediCore. Implementación pendiente."""
+"""Paquete de MediCore: arquitectura por capas."""
