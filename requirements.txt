@@ -1,0 +1,2 @@
+# No requiere paquetes pip. Usa la biblioteca estándar de Python y tkinter.
+# Recomendado: Python 3.10 o superior con Tcl/Tk instalado.
