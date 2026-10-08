@@ -1,73 +1,169 @@
-# MediCore · Gestión del centro médico
+# MediCore — Gestión de un Centro Médico
 
-Sistema de escritorio operado por el encargado del centro médico. El centro presta servicios directamente al paciente (B2C); el paciente no utiliza la aplicación. Se mantiene la estructura obligatoria de la evaluación.
+MediCore es una aplicación de escritorio desarrollada en Python para gestionar pacientes, médicos, citas e historias clínicas.
 
-## Ejecutar
+El sistema lo utiliza un encargado del centro médico, quien registra los datos y administra las atenciones. El proyecto representa un negocio B2C: el centro médico presta servicios directamente a sus pacientes.
 
-Descomprime `Medi_Core_parcial.zip`, abre la carpeta `Medi_Core_parcial` en VS Code y ejecuta:
+## Funcionalidades
+
+- Registrar pacientes y médicos.
+- Programar citas y validar disponibilidad.
+- Evitar cruces de horarios entre pacientes y médicos.
+- Consultar la agenda y cancelar citas.
+- Registrar una atención con diagnóstico e indicaciones.
+- Consultar historias clínicas por paciente.
+- Mostrar indicadores de citas y atenciones.
+- Guardar la información localmente en archivos JSON.
+- Exportar información de la agenda a CSV.
+
+Una cita se contabiliza como atendida cuando el encargado registra la atención. Programarla no aumenta el contador de atenciones.
+
+## Tecnologías
+
+- Python 3.10 o superior.
+- Tkinter y ttk para la interfaz gráfica.
+- JSON para almacenamiento local.
+- unittest para pruebas.
+- Git y GitHub para control de versiones y colaboración.
+
+## Estructura del proyecto
+
+```text
+Medi_Core_Parcial/
+├── .github/
+│   └── PULL_REQUEST_TEMPLATE.md
+├── docs/
+│   └── REPARTO_7.md
+├── src/
+│   ├── domain/
+│   │   ├── __init__.py
+│   │   ├── exceptions.py
+│   │   └── models.py
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── app_service.py
+│   │   └── data_manager.py
+│   ├── ui/
+│   │   ├── assets/
+│   │   ├── __init__.py
+│   │   ├── cli_interface.py
+│   │   └── widgets.py
+│   ├── __init__.py
+│   └── main.py
+├── tests/
+│   └── test_domain.py
+├── .gitignore
+├── architecture.md
+├── main.py
+├── README.md
+└── requirements.txt
+```
+
+Los iconos e imágenes se encuentran en `src/ui/assets/`.
+
+## Arquitectura
+
+El proyecto se organiza en tres capas:
+
+| Capa | Responsabilidad |
+|---|---|
+| Dominio | Define las entidades, sus atributos, validaciones y excepciones. |
+| Servicios y datos | Gestiona las operaciones, las reglas de las citas y la persistencia. |
+| Interfaz | Presenta los formularios, tablas y acciones disponibles para el encargado. |
+
+La interfaz utiliza los servicios, y los servicios trabajan con las entidades del dominio. El diseño aplica encapsulamiento, herencia y polimorfismo.
+
+El diagrama y las decisiones de arquitectura se documentan en `architecture.md`.
+
+## Instalación y ejecución
+
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/drakosa1/Medi_Core_Parcial.git
+cd Medi_Core_Parcial
+```
+
+### 2. Verificar Python
+
+```bash
+python --version
+```
+
+Se requiere Python 3.10 o superior con Tkinter disponible.
+
+### 3. Ejecutar la aplicación
+
+Desde la raíz del proyecto:
 
 ```bash
 python main.py
 ```
 
-También funcionan `python src/main.py` y `python -m src.main`. Requiere Python 3.10 o superior con Tcl/Tk, sin paquetes pip. En Windows puedes usar `py main.py`. Para comprobar Tk: `python -m tkinter`.
-
-## Flujo del encargado
-
-1. Abre directamente el **Panel del encargado**, sin selector de responsabilidades ni portal de pacientes.
-2. En **Pacientes**, registra nombre, DNI y datos de contacto. Cada paciente es un registro del centro, no una cuenta de acceso.
-3. Selecciona un paciente de la tabla y pulsa **Programar cita**. En **Médicos** consulta tarifas y disponibilidad; el paciente elegido se mantiene.
-4. Elige al médico, confirma el paciente en el formulario, selecciona fecha/turno y escribe el motivo. Guarda la cita.
-5. En **Agenda**, consulta todas las citas, filtra por fecha/estado, revisa detalles o cancela una cita.
-6. Al finalizar la consulta, selecciona una cita que ya haya comenzado y pulsa **Registrar atención**. El encargado transcribe el diagnóstico y las indicaciones proporcionados por el profesional.
-7. La cita pasa a ATENDIDA y el registro aparece en **Historias clínicas**. También se accede desde la tabla de pacientes.
-8. En **Resumen**, consulta indicadores o exporta la agenda a CSV. Los cambios se guardan automáticamente.
-
-La primera ejecución incluye datos ficticios y una cita anterior de Alex Torres para probar inmediatamente el registro de atención. **Atendidas se cuenta por la atención registrada**, no por el paso de la hora.
-
-## Funciones y presentación
-
-- Registro de pacientes y médicos, búsqueda, tarifas y especialidades.
-- Programación centralizada de citas, disponibilidad, cancelación, detalles y filtros.
-- Historias clínicas por paciente y registro de atención vinculado al médico de la cita.
-- Indicadores globales y exportación CSV.
-- Iconos e ilustraciones locales en `src/ui/assets/`; tablas con scroll vertical y horizontal.
-- DNI y CMP únicos, campos obligatorios, tarifas positivas y prevención de cruces de médico o paciente.
-- Turnos de 30 minutos, lunes a sábado de 08:00 a 18:00, hasta 180 días por adelantado.
-- Guardado JSON atómico y reversión en memoria si falla el almacenamiento.
-
-## Alcance
-
-Aplicación académica local de una sola instancia para el encargado. No incluye autoservicio, cuentas de pacientes, autenticación ni pagos en línea. B2C describe la relación del centro con sus pacientes, no un portal digital. Usar datos ficticios en la demostración. No es un sistema clínico listo para producción: ese uso requiere contresponsabilidades de acceso, privacidad y auditoría. El encargado registra la información emitida por el profesional; no reemplaza su criterio médico.
-
-Las fechas usan la hora local del equipo: configurar Windows en la zona horaria de Perú. No abrir dos instancias sobre el mismo JSON. El valor de atenciones no acredita pagos recibidos.
-
-## Datos y terminal
-
-El archivo se crea al primer inicio en `data/medicore.json`, excluido de Git. No se incluye un archivo con datos personales en la entrega. Para probar otra base sin tocar la anterior:
+También se puede ejecutar con:
 
 ```bash
-python main.py --datos data/otra_demo.json
-python main.py --datos data/base_vacia.json --sin-demo
-python main.py --cli
+python -m src.main
 ```
 
-`--sin-demo` se aplica solo a una base que todavía no exista. La CLI es un resumen de datos; la operación interactiva se realiza en la GUI.
+La aplicación utiliza la biblioteca estándar de Python y no requiere paquetes externos de pip.
+
+## Uso del sistema
+
+1. Registrar al paciente y al médico.
+2. Seleccionar al paciente, al médico y un horario disponible.
+3. Programar la cita.
+4. Consultar la cita en la agenda.
+5. Al realizarse la atención, registrar el diagnóstico y las indicaciones.
+6. Consultar la historia clínica y los indicadores actualizados.
+
+La información se conserva localmente entre ejecuciones. Los datos de demostración son ficticios.
 
 ## Pruebas
+
+Desde la raíz del repositorio:
 
 ```bash
 python -m unittest discover -s tests -v
 ```
 
-Hay 14 pruebas automáticas: encapsulamiento, DNI/contacto, duplicados, tarifas, persistencia, cruces de médico/paciente, cancelación, horarios, atención/historia, diagnóstico obligatorio, reversión ante fallo de guardado, JSON corrupto y filtros. Se ejecutaron correctamente en el entorno de construcción. La interfaz no pudo verificarse visualmente en ese entorno por falta de servidor gráfico; revisar la GUI en Windows antes de la sustentación. No se adjuntan capturas de ejecución ficticias.
+Las pruebas verifican validaciones del dominio y operaciones del sistema, como programación, conflictos de horarios, atención y persistencia.
 
-## Estructura
+## Organización del equipo
 
-Las rutas exigidas se conservan: `.github/PULL_REQUEST_TEMPLATE.md`, `src/domain/__init__.py`, `exceptions.py`, `models.py`; `src/services/__init__.py`, `app_service.py`, `data_manager.py`; `src/ui/__init__.py`, `cli_interface.py`; `src/__init__.py`, `src/main.py`, `tests/test_domain.py`, `.gitignore`, `architecture.md`, `README.md`.
+El equipo está formado por siete integrantes:
 
-Adiciones: `main.py` (lanzador), `requirements.txt` (requisitos), `src/ui/widgets.py` (componentes), `src/ui/assets/` (imágenes/iconos), `.github/workflows/tests.yml` (pruebas en PR) y `docs/REPARTO_7.md` (plan de equipo).
+| Área | Integrantes | Rama |
+|---|---:|---|
+| Dominio | 2 | `feature/dominio` |
+| Servicios y datos | 2 | `feature/servicios` |
+| Interfaz | 2 | `feature/ui` |
+| Integración y documentación | 1 | `fix/integracion` |
 
-## Uso en el repositorio
+El GitMaster revisa los cambios, coordina la integración y resuelve los conflictos junto con los responsables de cada parte.
 
-Este ZIP es la versión completa para ejecutar y revisar. Como ya subiste el esquema, integra después los aportes por ramas y PR según `docs/REPARTO_7.md`. No reemplaces toda main con este ZIP si necesitas conservar el proceso individual de cada integrante. No contiene `.git` ni un historial de commits inventado. Cada integrante debe comprender, validar y declarar el apoyo de IA en su PR.
+Cada integrante debe realizar sus propios commits y Pull Requests para dejar evidencia de su participación.
+
+## Flujo de colaboración
+
+1. Actualizar el repositorio antes de trabajar.
+2. Cambiar a la rama correspondiente.
+3. Modificar y probar los archivos asignados.
+4. Crear un commit con un mensaje descriptivo.
+5. Subir los cambios a GitHub.
+6. Abrir un Pull Request hacia `main`.
+7. Revisar e integrar los cambios.
+
+Cuando dos integrantes comparten una rama, deben coordinar sus subidas y actualizarla antes de continuar.
+
+## Uso de inteligencia artificial
+
+Este proyecto utiliza asistencia de inteligencia artificial para apoyar el desarrollo y la documentación.
+
+Cada integrante debe declarar en su Pull Request los prompts utilizados, los cambios realizados y las pruebas que ejecutó realmente. También debe revisar y comprender el código que presenta.
+
+## Alcance
+
+MediCore es un prototipo académico de gestión interna. No incluye un portal de pacientes ni pagos en línea.
+
+Para utilizarlo con datos reales, se requiere incorporar autenticación, permisos, protección de información y procedimientos de respaldo.
